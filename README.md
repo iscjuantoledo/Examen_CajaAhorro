@@ -47,7 +47,7 @@ Instalación de base de datos
 Base de datos: SQL Server
 Se sugiere utilizar el script de bd para evitar complicaciones con el manejo de las versiones del motor de bd
 1. Desde el SQL Server Management conectese a su instancia de base de datos.
-2. Abra el archivo ScribDb.sql
+2. Abra el archivo Script Database.sql que esta en la carpeta Exam Caja
 3. Ejecute el archivo, y espere a que se reflejen los cambios
 4. Aplique la configuración de autenticacion mixta, aunque se usa la de Sql server
 5. Abra la solución del proyecto completo
