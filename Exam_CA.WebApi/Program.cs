@@ -46,7 +46,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                    };
                });
 
-
 builder.Services.AddDbContext<DbSeg>(Options => Options.UseSqlServer(connectionString).UseLazyLoadingProxies());
 
 builder.Services.AddScoped<ICuentaRepository, CuentaRepository>();

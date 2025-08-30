@@ -1,0 +1,314 @@
+{
+	"info": {
+		"_postman_id": "e78793ca-1ebd-4958-bc92-1cd61df96763",
+		"name": "Exam test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42837361"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code !== 200) {\r",
+							"    console.log(\"Response status code is not 200. Stopping collection run.\");\r",
+							"    pm.execution.setNextRequest(null); // Stop the collection run\r",
+							"    pm.environment.set(\"token\",\"\");\r",
+							"}\r",
+							"else{\r",
+							"    var jsonData = pm.response.json();\r",
+							"    var valueToSave = jsonData.token; \r",
+							"    console.log(valueToSave);\r",
+							"    pm.environment.set(\"token\", valueToSave);\r",
+							"}\r",
+							"        \r",
+							"     "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"login\": \"iscjuantoledo@gmail.com\",\r\n  \"password\": \"123456789\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5217/api/Login",
+					"host": [
+						"localhost"
+					],
+					"port": "5217",
+					"path": [
+						"api",
+						"Login"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Auth exit",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"login\": \"iscjuantoledo@gmail.com\",\r\n  \"password\": \"123456789\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5217/api/Usuario/Auth",
+							"host": [
+								"localhost"
+							],
+							"port": "5217",
+							"path": [
+								"api",
+								"Usuario",
+								"Auth"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 30 Aug 2025 17:43:17 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"idusuario\": 1,\n    \"cuenta\": \"iscjuantoledo@gmail.com\",\n    \"nombre\": \"Juan Alberto Toledo Solis\",\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZFVzdWFyaW8iOiIxIiwiQ29ycmVvX2VsZWN0cm9uaWNvIjoiaXNjanVhbnRvbGVkb0BnbWFpbC5jb20iLCJOb21icmVfcGFudGFsbGEiOiJKdWFuIEFsYmVydG8gVG9sZWRvIFNvbGlzIiwiZXhwIjoxNzU2NTc2Mzk3LCJpc3MiOiJzZWN1cml0eS5jYWphYWhvcnJvLmNvbSIsImF1ZCI6InNlY3VyaXR5LmNhamFhaG9ycm8uY29tIn0.bbwb7V7bhnjsDzR9njjV1YIMTo5AnsMXIx_-qLOOEXQ\"\n}"
+				},
+				{
+					"name": "Auth credenciales incorrectas",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"login\": \"iscjuantoledo@gmail.com\",\r\n  \"password\": \"123456782\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5217/api/Usuario/Auth",
+							"host": [
+								"localhost"
+							],
+							"port": "5217",
+							"path": [
+								"api",
+								"Usuario",
+								"Auth"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 30 Aug 2025 17:43:49 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "Invalid credentials"
+				}
+			]
+		},
+		{
+			"name": "Get_cuentas token",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5217/api/Account/Token",
+					"host": [
+						"localhost"
+					],
+					"port": "5217",
+					"path": [
+						"api",
+						"Account",
+						"Token"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get_cuentas token Ok",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:5217/api/Cuenta/Token",
+							"host": [
+								"localhost"
+							],
+							"port": "5217",
+							"path": [
+								"api",
+								"Cuenta",
+								"Token"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 30 Aug 2025 18:23:14 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"idcuenta\": 1,\n        \"numero\": \"1029340494\",\n        \"tipo\": \"Debido\",\n        \"saldo\": 100\n    },\n    {\n        \"idcuenta\": 2,\n        \"numero\": \"1029340443\",\n        \"tipo\": \"Credito\",\n        \"saldo\": 200\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "GetCuentas",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5217/api/Account/1",
+					"host": [
+						"localhost"
+					],
+					"port": "5217",
+					"path": [
+						"api",
+						"Account",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GetCuentas Ok",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:5217/api/Cuenta/1",
+							"host": [
+								"localhost"
+							],
+							"port": "5217",
+							"path": [
+								"api",
+								"Cuenta",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 30 Aug 2025 18:24:31 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"idcuenta\": 1,\n        \"numero\": \"1029340494\",\n        \"tipo\": \"Debido\",\n        \"saldo\": 100\n    },\n    {\n        \"idcuenta\": 2,\n        \"numero\": \"1029340443\",\n        \"tipo\": \"Credito\",\n        \"saldo\": 200\n    }\n]"
+				}
+			]
+		}
+	]
+}

@@ -1,10 +1,12 @@
 ﻿using Exam_CA.Application.DTOs;
 using Exam_CA.Application.Interfaces;
 using Exam_CA.Domain.Entities;
+using Exam_CA.WebApi.Validators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -62,8 +64,15 @@ namespace Exam_CA.WebApi.Controllers
             {
                 try
                 {
-                    if (login == null)
-                        return BadRequest("Login resource must be asssigned");
+                    LoginDtoValidator validator = new LoginDtoValidator();
+                    var result = validator.Validate(login);
+                    if (!result.IsValid)
+                    {
+                        return BadRequest("Los valores que ingreso son incorrectos");
+                    }
+
+                    //if (login == null)
+                    //    return BadRequest("Login resource must be asssigned");
 
                     Usuario usuario = await _usuarioservice.Valid(login.login, login.password);
                     if (usuario == null)

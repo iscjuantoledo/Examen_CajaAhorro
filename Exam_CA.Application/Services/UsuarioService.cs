@@ -13,14 +13,16 @@ namespace Exam_CA.Application.Services
     public class UsuarioService: IUsuarioService
     {
         private readonly IUsuarioRepository _usuarioRepository;
+        
 
         public UsuarioService(IUsuarioRepository usuarioRepository)
         {
             _usuarioRepository = usuarioRepository;
+
         }
 
         public async Task<Usuario> Valid(string _cuenta, string _password)
-        {
+        {            
             Usuario user = await this._usuarioRepository.ValidarUsuario(_cuenta, _password);
             return user;
         }
