@@ -21,8 +21,4 @@
     <ProjectReference Include="..\Exam_CA.Infraestructure\Exam_CA.Infraestructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Util\" />
-  </ItemGroup>
-
 </Project>

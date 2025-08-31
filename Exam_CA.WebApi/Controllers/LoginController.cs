@@ -1,7 +1,9 @@
 ﻿using Exam_CA.Application.DTOs;
 using Exam_CA.Application.Interfaces;
 using Exam_CA.Domain.Entities;
+using Exam_CA.WebApi.Util;
 using Exam_CA.WebApi.Validators;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +21,14 @@ namespace Exam_CA.WebApi.Controllers
     public class LoginController : ControllerBase
     {
      
-        public IConfiguration configuration;
+        public readonly IConfiguracionServices configuration;
         public IUsuarioService _usuarioservice;
-        public LoginController(IConfiguration _configuration, IUsuarioService usuarioservice  )
+        IValidator<LoginDto> _validator;
+        public LoginController(IConfiguracionServices _configuration, IUsuarioService usuarioservice , IValidator<LoginDto> validator)
         {
             configuration = _configuration;
             _usuarioservice = usuarioservice;
+            _validator = validator;
         }
 
         [NonAction]
@@ -37,9 +41,9 @@ namespace Exam_CA.WebApi.Controllers
                        new Claim(CustomClaims.Nombre_pantalla,usuario.Nombre)
                     };
 
-            string _key = configuration.GetSection("jwtSettings").GetSection("key").Value;
-            string _site = configuration.GetSection("jwtSettings").GetSection("site").Value;
-            int _minuteToExpire = int.Parse(configuration.GetSection("jwtSettings").GetSection("minutesToExpiration").Value);            
+            string _key = configuration.GetJwtKey("key");
+            string _site = configuration.GetJwtKey("site");
+            int _minuteToExpire = int.Parse(configuration.GetJwtKey("minutesToExpiration"));            
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key));
             var signInCred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -62,27 +66,61 @@ namespace Exam_CA.WebApi.Controllers
         {
             if (ModelState.IsValid)
             {
+                UsuarioDto usuarioDto=null;
+                bool error = false;
                 try
                 {
-                    LoginDtoValidator validator = new LoginDtoValidator();
-                    var result = validator.Validate(login);
+                   
+                    var result = this._validator.Validate(login);
                     if (!result.IsValid)
                     {
                         return BadRequest("Los valores que ingreso son incorrectos");
                     }
 
-                    //if (login == null)
-                    //    return BadRequest("Login resource must be asssigned");
+                    switch (login.grant_type) {
+                        case "password":
+                            Usuario usuario = await _usuarioservice.Valid(login.login, login.password);
+                            if (usuario == null)
+                            {
+                                error = false;
+                                break;
+                            }
 
-                    Usuario usuario = await _usuarioservice.Valid(login.login, login.password);
-                    if (usuario == null)
-                        return BadRequest("Invalid credentials");
+                            var token = CreateJwtTokenAsync(usuario);
 
-                    var token = CreateJwtTokenAsync(usuario);
-                                     
-                    UsuarioDto usuarioDto = new UsuarioDto(usuario.Idusuario, usuario.Usuario1, usuario.Nombre, token);
+                            /*save device*/
 
-                    return Ok(usuarioDto);
+                            bool res = await _usuarioservice.SaveDevice(usuario.Idusuario, login.device, login.platform);
+
+                            if (res)
+                            {
+                                usuarioDto = new UsuarioDto(usuario.Idusuario, usuario.Usuario1, usuario.Nombre, token);
+                                error = true;                                
+                            }
+                            else                            
+                                error = false;                                                            
+                            break;
+                        case "client_credentials":
+                            Usuario utoken = new Usuario();
+                            utoken.Idusuario = 0;
+                            utoken.Usuario1 = "Client credential";
+                            utoken.Nombre = "****";
+                            var tokenc = CreateJwtTokenAsync(utoken);
+                            usuarioDto = new UsuarioDto(utoken.Idusuario, utoken.Usuario1, utoken.Nombre, tokenc);
+                            error = true;
+                            break;
+                        default:
+                            error = false;
+                            break;
+                    }
+
+
+                    if (error)                    
+                        return Ok(usuarioDto);                    
+                    else
+                        return BadRequest("Credenciales incorrectas");
+                    
+                    
                 }
                 catch
                 {

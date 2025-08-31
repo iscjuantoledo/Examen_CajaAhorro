@@ -22,12 +22,16 @@ public partial class DbSeg : DbContext
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
+    public virtual DbSet<UsuarioDevice> UsuarioDevices { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
 //        => optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=db_seg;User ID=sa;Password=M4n0h42012;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        
+
         modelBuilder.Entity<Cuentum>(entity =>
         {
             entity.HasKey(e => e.Idcuenta);
@@ -96,6 +100,26 @@ public partial class DbSeg : DbContext
                 .HasMaxLength(200)
                 .IsUnicode(false)
                 .HasColumnName("nombre");
+        });
+
+        modelBuilder.Entity<UsuarioDevice>(entity =>
+        {
+            entity.HasKey(e => e.Iddevice);
+            entity.ToTable("UsuarioDevice");
+            entity.Property(e => e.Iddevice).HasColumnName("iddevice");
+            entity.Property(e => e.Idusuario).HasColumnName("idusuario");
+            entity.Property(e => e.Fecha)
+                .HasColumnType("datetime")
+                .HasColumnName("fecha");
+            entity.Property(e => e.Device)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("device");
+            entity.Property(e => e.Platform)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("platform");
+            entity.Property(e => e.Ultimo).HasColumnName("ultimo");
         });
 
         OnModelCreatingPartial(modelBuilder);

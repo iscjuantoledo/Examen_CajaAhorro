@@ -17,15 +17,40 @@
 							"    console.log(\"Response status code is not 200. Stopping collection run.\");\r",
 							"    pm.execution.setNextRequest(null); // Stop the collection run\r",
 							"    pm.environment.set(\"token\",\"\");\r",
+							"   \r",
 							"}\r",
 							"else{\r",
 							"    var jsonData = pm.response.json();\r",
 							"    var valueToSave = jsonData.token; \r",
 							"    console.log(valueToSave);\r",
-							"    pm.environment.set(\"token\", valueToSave);\r",
+							"    pm.collectionVariables.set(\"token\", valueToSave);\r",
 							"}\r",
 							"        \r",
 							"     "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var client_id = pm.collectionVariables.get(\"clientid\");\r",
+							"console.log(client_id);\r",
+							"var secret_id = pm.collectionVariables.get(\"clientsecret\");\r",
+							"console.log(secret_id);\r",
+							"\r",
+							"\r",
+							"var timestamp = Math.floor(Date.now() / 1000);\r",
+							"var sig = client_id + secret_id + timestamp;\r",
+							"var sha = CryptoJS.SHA256(sig);\r",
+							"var shav = sha.toString();\r",
+							"\r",
+							"pm.collectionVariables.set(\"timestamp\", timestamp);\r",
+							"pm.collectionVariables.set(\"signature\", shav);\r",
+							"\r",
+							"console.log(pm.request.body);"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -40,7 +65,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"login\": \"iscjuantoledo@gmail.com\",\r\n  \"password\": \"123456789\"\r\n}",
+					"raw": "{\r\n  \"login\": \"iscjuantoledo@gmail.com\",\r\n  \"password\": \"123456789\",\r\n  \"clientid\": {{clientid}},\r\n  \"clientsecret\": {{clientsecret}},\r\n  \"timestamp\": {{timestamp}},\r\n  \"signature\": {{signature}},\r\n  \"grant_type\": \"password\",\r\n  \"device\": \"device1\",\r\n  \"platform\": \"postman\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -161,6 +186,106 @@
 					],
 					"cookie": [],
 					"body": "Invalid credentials"
+				},
+				{
+					"name": "auth password",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"login\": \"iscjuantoledo@gmail.com\",\r\n  \"password\": \"123456789\",\r\n  \"clientid\": \"{{clientid}}\",\r\n  \"clientsecret\": \"{{clientsecret}}\",\r\n  \"timestamp\": {{timestamp}},\r\n  \"signature\": \"{{signature}}\",\r\n  \"grant_type\": \"password\",\r\n  \"device\": \"device1\",\r\n  \"platform\": \"postman\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5217/api/Login",
+							"host": [
+								"localhost"
+							],
+							"port": "5217",
+							"path": [
+								"api",
+								"Login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 31 Aug 2025 04:17:50 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"idusuario\": 1,\n    \"cuenta\": \"iscjuantoledo@gmail.com\",\n    \"nombre\": \"Juan Alberto Toledo Solis\",\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZFVzdWFyaW8iOiIxIiwiQ29ycmVvX2VsZWN0cm9uaWNvIjoiaXNjanVhbnRvbGVkb0BnbWFpbC5jb20iLCJOb21icmVfcGFudGFsbGEiOiJKdWFuIEFsYmVydG8gVG9sZWRvIFNvbGlzIiwiZXhwIjoxNzU2NjE0NDcwLCJpc3MiOiJzZWN1cml0eS5jYWphYWhvcnJvLmNvbSIsImF1ZCI6InNlY3VyaXR5LmNhamFhaG9ycm8uY29tIn0.tt0BNAKGl43LBZ4mMEmjXY8_xp4d1Ufe3hhrVl3obzo\"\n}"
+				},
+				{
+					"name": "client credential",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"login\": null,\r\n  \"password\": null,\r\n  \"clientid\": \"{{clientid}}\",\r\n  \"clientsecret\": \"{{clientsecret}}\",\r\n  \"timestamp\": {{timestamp}},\r\n  \"signature\": \"{{signature}}\",\r\n  \"grant_type\": \"client_credentials\",\r\n  \"device\": \"device1\",\r\n  \"platform\": \"postman\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5217/api/Login",
+							"host": [
+								"localhost"
+							],
+							"port": "5217",
+							"path": [
+								"api",
+								"Login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 31 Aug 2025 04:19:51 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Kestrel"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"idusuario\": 0,\n    \"cuenta\": \"Client credential\",\n    \"nombre\": \"****\",\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZFVzdWFyaW8iOiIwIiwiQ29ycmVvX2VsZWN0cm9uaWNvIjoiQ2xpZW50IGNyZWRlbnRpYWwiLCJOb21icmVfcGFudGFsbGEiOiIqKioqIiwiZXhwIjoxNzU2NjE0NTkxLCJpc3MiOiJzZWN1cml0eS5jYWphYWhvcnJvLmNvbSIsImF1ZCI6InNlY3VyaXR5LmNhamFhaG9ycm8uY29tIn0.5ww5KmAv9owBNvZmwjYr2oc1bg6FQWld2xz5VrtSnK0\"\n}"
 				}
 			]
 		},
@@ -309,6 +434,65 @@
 					"body": "[\n    {\n        \"idcuenta\": 1,\n        \"numero\": \"1029340494\",\n        \"tipo\": \"Debido\",\n        \"saldo\": 100\n    },\n    {\n        \"idcuenta\": 2,\n        \"numero\": \"1029340443\",\n        \"tipo\": \"Credito\",\n        \"saldo\": 200\n    }\n]"
 				}
 			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "",
+			"type": "string",
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "clientid",
+			"value": "",
+			"type": "string",
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "clientsecret",
+			"value": "",
+			"type": "string",
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "timestamp",
+			"value": ""
+		},
+		{
+			"key": "signature",
+			"value": ""
 		}
 	]
 }

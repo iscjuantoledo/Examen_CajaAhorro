@@ -10,5 +10,6 @@ namespace Exam_CA.Application.Interfaces
     public interface IUsuarioService
     {
         Task<Usuario> Valid(string _cuenta, string _password);
+        Task<bool> SaveDevice(int _idusuario, string _device, string _platform);
     }
 }

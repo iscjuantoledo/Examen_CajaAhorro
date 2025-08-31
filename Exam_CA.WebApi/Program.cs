@@ -1,8 +1,12 @@
+using Exam_CA.Application.DTOs;
 using Exam_CA.Application.Interfaces;
 using Exam_CA.Application.Services;
 using Exam_CA.Domain.Interfaces;
 using Exam_CA.Infraestructure.Data;
 using Exam_CA.Infraestructure.Repositories;
+using Exam_CA.WebApi.Util;
+using Exam_CA.WebApi.Validators;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -51,10 +55,14 @@ builder.Services.AddDbContext<DbSeg>(Options => Options.UseSqlServer(connectionS
 builder.Services.AddScoped<ICuentaRepository, CuentaRepository>();
 builder.Services.AddScoped<ICuentaService, CuentaService>();
 
+builder.Services.AddScoped<IValidator<LoginDto>, LoginDtoValidator>();
+
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
-
+builder.Services.AddSingleton<IEncriptServices, EncriptServices>();
+builder.Services.AddSingleton<IConfiguration>(provider => builder.Configuration);
+builder.Services.AddSingleton<IConfiguracionServices, ConfiguracionServices>();
 
 var app = builder.Build();
 
