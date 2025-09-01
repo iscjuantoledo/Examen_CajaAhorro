@@ -58,7 +58,8 @@ Se sugiere utilizar el script de bd para evitar complicaciones con el manejo de 
   
 7. Una vez realizado ello, podra realizar la ejecucion del proyecto, asegurese que el proyecto Exam_CA.WebApi este seleccionado como el proyecto printipal
 
-** Es importante que se utilicen las colecciones de postman para probar la api, toda vez que el mecanismo de autenticación implementa un cifrado de claves y el uso de timestamp; la colección de postman proporcionada cuenta con los scripts pre con dicha configuracion.**
+---
+Es importante que se utilicen las colecciones de postman para probar la api, toda vez que el mecanismo de autenticación implementa un cifrado de claves y el uso de timestamp; la colección de postman proporcionada cuenta con los scripts pre con dicha configuracion.
 
 ----
 Se adjunta: 
